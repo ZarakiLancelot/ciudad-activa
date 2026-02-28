@@ -1,74 +1,293 @@
-# React + TypeScript + Vite
+# CiudadActiva 🏙️
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**[🇪🇸 Leer en Español / Read in Spanish](./README.es.md)**
 
-Currently, two official plugins are available:
+> A civic reporting platform that empowers citizens to report urban problems directly to their municipality — with photos, exact location, and community support.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Built for the [DEV Weekend Challenge](https://dev.to/devteam/happening-now-dev-weekend-challenge-submissions-due-march-2-at-759am-utc-5fg8?) 🏆
 
-## React Compiler
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-ciudad--activa--gt.vercel.app-16a34a?style=for-the-badge)](https://ciudad-activa-gt.vercel.app)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript)
+![Supabase](https://img.shields.io/badge/Supabase-BaaS-3ECF8E?style=flat-square&logo=supabase)
+![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000?style=flat-square&logo=vercel)
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🌎 The Problem
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+In municipalities like San José Pinula, Guatemala, citizens have no efficient way to report urban issues (potholes, broken streetlights, water leaks, etc.) to local authorities. Reports get lost in WhatsApp groups or never reach the right people. Problems go unfixed for months.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+**CiudadActiva** bridges that gap — giving every citizen a direct, visual, geolocated channel to communicate with their municipality, and giving municipalities a real-time dashboard to manage and respond to issues.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+---
+
+## ✨ Features
+
+### For Citizens
+
+- 📍 **Report issues** with photo/video, category, and exact GPS location
+- 🗺️ **View all reports** on an interactive public map
+- ❤️ **"This affects me too"** — support existing reports with one tap
+- 🔗 **Share reports** on social media to increase visibility
+- 👤 **Anonymous or registered** — no barriers to reporting
+
+### For Municipalities
+
+- 📋 **Admin dashboard** with all reports filterable by status
+- 🔄 **Update report status** — Pending → In Progress → Resolved
+- 📊 **At-a-glance stats** — total, pending, in progress, resolved
+
+### Platform
+
+- 🏙️ **Multi-municipality** — currently San José Pinula, Mixco, and Guatemala City
+- 📱 **Mobile-first** — optimized for smartphones, with direct camera access
+- 🔒 **Row Level Security** — data access enforced at the database level
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+| --- | --- |
+| Frontend | React 18 + TypeScript + Vite |
+| Routing | React Router v7 |
+| Backend | Supabase (Auth, Database, Storage) |
+| Database | PostgreSQL (via Supabase) |
+| Maps | Leaflet.js + React Leaflet + OpenStreetMap |
+| Hosting | Vercel |
+
+> No custom backend server. Supabase handles authentication, database, file storage, and REST API automatically.
+
+---
+
+## 🗂️ Project Structure
+
+```bash
+src/
+├── assets/          # Municipality logos
+├── components/      # Reusable components
+├── hooks/           # Custom React hooks
+├── lib/
+│   └── supabase.ts  # Supabase client
+├── pages/
+│   ├── MapPage.tsx             # Main map view
+│   ├── NewReportPage.tsx       # Create report form
+│   ├── ReportDetailPage.tsx    # Report detail view
+│   ├── AuthPage.tsx            # Login / Register
+│   └── AdminPage.tsx           # Municipality dashboard
+└── types/
+    └── index.ts     # TypeScript types
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🗄️ Database Schema
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+municipalities   id, name, slug, created_at
+profiles         id, display_name, is_anonymous, is_admin, municipality_id, created_at
+reports          id, title, description, category, status, photo_url,
+                 lat, lng, address, user_id, municipality_id, created_at
+affected         id, report_id, user_id, created_at
 ```
-# ciudad-activa
+
+**Report categories:** `pothole` · `accident` · `lighting` · `water` · `trash` · `other`
+
+**Report statuses:** `pending` · `in_progress` · `resolved`
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 20+
+- A [Supabase](https://supabase.com) account (free tier)
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/ZarakiLancelot/ciudad-activa.git
+cd ciudad-activa
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Set up Supabase
+
+Create a new Supabase project and run the following SQL in the **SQL Editor**:
+
+```sql
+-- Municipalities
+create table municipalities (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  slug text not null unique,
+  created_at timestamptz default now()
+);
+
+insert into municipalities (name, slug) values
+  ('San José Pinula', 'san-jose-pinula'),
+  ('Mixco', 'mixco'),
+  ('Guatemala', 'guatemala');
+
+-- Profiles
+create table profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  display_name text,
+  is_anonymous boolean default false,
+  is_admin boolean default false,
+  municipality_id uuid references municipalities(id),
+  created_at timestamptz default now()
+);
+
+-- Reports
+create table reports (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  description text,
+  category text not null check (category in ('pothole','accident','lighting','water','trash','other')),
+  status text not null default 'pending' check (status in ('pending','in_progress','resolved')),
+  photo_url text,
+  lat double precision not null,
+  lng double precision not null,
+  address text,
+  user_id uuid references profiles(id) on delete set null,
+  municipality_id uuid references municipalities(id) not null,
+  created_at timestamptz default now()
+);
+
+-- Affected ("this affects me too")
+create table affected (
+  id uuid primary key default gen_random_uuid(),
+  report_id uuid references reports(id) on delete cascade not null,
+  user_id uuid references auth.users(id) on delete set null,
+  created_at timestamptz default now(),
+  constraint affected_report_user_unique unique (report_id, user_id)
+);
+
+-- Row Level Security
+alter table municipalities enable row level security;
+alter table profiles enable row level security;
+alter table reports enable row level security;
+alter table affected enable row level security;
+
+create policy "public read" on municipalities for select using (true);
+create policy "public read" on profiles for select using (true);
+create policy "own insert" on profiles for insert with check (auth.uid() = id);
+create policy "own update" on profiles for update using (auth.uid() = id);
+create policy "public read" on reports for select using (true);
+create policy "auth insert" on reports for insert with check (auth.uid() is not null);
+create policy "admin update" on reports for update using (
+  exists (select 1 from profiles where id = auth.uid() and is_admin = true)
+);
+create policy "public read" on affected for select using (true);
+create policy "auth insert" on affected for insert with check (auth.uid() is not null);
+create policy "own delete" on affected for delete using (auth.uid() = user_id);
+
+-- Auto-create profile on signup
+create or replace function public.handle_new_user()
+returns trigger as $$
+begin
+  insert into public.profiles (id, display_name, is_anonymous, municipality_id)
+  values (
+    new.id,
+    coalesce(new.email, 'Anónimo'),
+    (new.raw_user_meta_data->>'is_anonymous')::boolean,
+    (select id from public.municipalities where slug = 'san-jose-pinula' limit 1)
+  )
+  on conflict (id) do nothing;
+  return new;
+end;
+$$ language plpgsql security definer;
+
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute procedure public.handle_new_user();
+```
+
+Create a **public storage bucket** named `report-photos` and add these policies:
+
+```sql
+create policy "public read" on storage.objects for select to public using (bucket_id = 'report-photos');
+create policy "authenticated upload" on storage.objects for insert to authenticated with check (bucket_id = 'report-photos');
+```
+
+### 4. Configure environment variables
+
+Create a `.env.local` file in the project root:
+
+```env
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+Find these values in your Supabase project under **Settings → API**.
+
+### 5. Enable Anonymous Auth
+
+In Supabase, go to **Authentication → Providers → Anonymous** and enable it.
+
+### 6. Run the development server
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+---
+
+## 🔑 Creating an Admin User
+
+1. Register a user through the app
+2. Find their UUID in Supabase → **Authentication → Users**
+3. Run in SQL Editor:
+
+```sql
+update profiles set is_admin = true where id = 'USER_UUID_HERE';
+```
+
+The admin user will see a **Panel** button in the map header, giving access to the municipality dashboard.
+
+---
+
+## 📦 Deployment
+
+This project is deployed on [Vercel](https://vercel.com). To deploy your own instance:
+
+1. Push the repository to GitHub
+2. Import the project in Vercel
+3. Add the environment variables (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`)
+4. Deploy
+
+---
+
+## 🗺️ Roadmap
+
+- [ ] Municipality dashboard with analytics and charts
+- [ ] Push notifications when report status changes
+- [ ] PWA with offline support
+- [ ] Multi-language UI (English / Spanish)
+- [ ] Municipality self-service onboarding
+- [ ] Mobile app (React Native)
+- [ ] Duplicate report detection by proximity
+- [ ] Integration with official government open data APIs
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please open an issue first to discuss what you would like to change.
+
+---
+
+## 📄 License
+
+MIT © 2026 — Built with ❤️ for the [DEV Weekend Challenge](https://dev.to/devteam/happening-now-dev-weekend-challenge-submissions-due-march-2-at-759am-utc-5fg8?)
