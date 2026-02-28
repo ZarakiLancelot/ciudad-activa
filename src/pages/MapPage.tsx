@@ -5,6 +5,7 @@ import 'leaflet/dist/leaflet.css'
 import { supabase } from '../lib/supabase'
 import type { Report, ReportCategory } from '../types'
 import type { User } from '@supabase/supabase-js'
+import sjpLogo from '../assets/sjp.webp'
 
 const SAN_JOSE_PINULA = { lat: 14.5386, lng: -90.4125 }
 
@@ -69,6 +70,32 @@ function MapPage() {
 
   return (
     <div className="map-page">
+      {/* Loading overlay */}
+      {loading && (
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          zIndex: 2000,
+          background: 'white',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '20px',
+        }}>
+          <img
+            src={sjpLogo}
+            alt="Municipalidad de San José Pinula"
+            className="logo-pulse"
+            style={{ width: '120px', height: '120px', objectFit: 'contain' }}
+          />
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ fontSize: '18px', fontWeight: 700, color: '#16a34a' }}>CiudadActiva</p>
+            <p style={{ fontSize: '13px', color: '#9ca3af', marginTop: '4px' }}>Cargando reportes...</p>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div style={{
         position: 'absolute',
