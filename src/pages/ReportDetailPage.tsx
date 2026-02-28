@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router'
 import { MapContainer, TileLayer, CircleMarker } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import type { Report, ReportCategory, ReportStatus } from '../types'
+import LanguageToggle from '../components/LanguageToggle'
 
 const CATEGORY_COLORS: Record<ReportCategory, string> = {
   pothole: '#f97316',
@@ -12,21 +14,6 @@ const CATEGORY_COLORS: Record<ReportCategory, string> = {
   water: '#3b82f6',
   trash: '#22c55e',
   other: '#8b5cf6',
-}
-
-const CATEGORY_LABELS: Record<ReportCategory, string> = {
-  pothole: 'Bache',
-  accident: 'Accidente',
-  lighting: 'Alumbrado',
-  water: 'Agua',
-  trash: 'Basura',
-  other: 'Otro',
-}
-
-const STATUS_LABELS: Record<ReportStatus, string> = {
-  pending: 'Pendiente',
-  in_progress: 'En proceso',
-  resolved: 'Resuelto',
 }
 
 const STATUS_COLORS: Record<ReportStatus, { bg: string; color: string }> = {
@@ -46,6 +33,7 @@ function formatDate(dateStr: string) {
 }
 
 function ReportDetailPage() {
+  const { t } = useTranslation()
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const location = useLocation()
@@ -156,7 +144,7 @@ function ReportDetailPage() {
   if (loading) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-        <p style={{ color: '#6b7280' }}>Cargando reporte...</p>
+        <p style={{ color: '#6b7280' }}>{t('detail.loading')}</p>
       </div>
     )
   }
@@ -189,6 +177,7 @@ function ReportDetailPage() {
         <h1 style={{ fontSize: '18px', fontWeight: 700, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {report.title}
         </h1>
+        <LanguageToggle />
       </div>
 
       <div style={{ maxWidth: '600px', margin: '0 auto' }}>
@@ -220,7 +209,7 @@ function ReportDetailPage() {
               color: 'white',
               background: categoryColor,
             }}>
-              {CATEGORY_LABELS[report.category]}
+              {t(`categories.${report.category}`)}
             </span>
             <span style={{
               padding: '4px 10px',
@@ -230,7 +219,7 @@ function ReportDetailPage() {
               background: statusStyle.bg,
               color: statusStyle.color,
             }}>
-              {STATUS_LABELS[report.status]}
+              {t(`status.${report.status}`)}
             </span>
           </div>
 
@@ -244,12 +233,12 @@ function ReportDetailPage() {
 
           {/* Date */}
           <p style={{ fontSize: '12px', color: '#9ca3af' }}>
-            Reportado el {formatDate(report.created_at)}
+            {t('detail.reportedOn')} {formatDate(report.created_at)}
           </p>
 
           {/* Location map */}
           <div>
-            <p style={{ fontSize: '13px', fontWeight: 600, marginBottom: '8px' }}>Ubicación</p>
+            <p style={{ fontSize: '13px', fontWeight: 600, marginBottom: '8px' }}>{t('detail.location')}</p>
             {report.address && (
               <p style={{ fontSize: '13px', color: '#6b7280', marginBottom: '8px' }}>📍 {report.address}</p>
             )}
@@ -297,7 +286,7 @@ function ReportDetailPage() {
               }}
             >
               <span style={{ fontSize: '22px' }}>{hasVoted ? '❤️' : '🤍'}</span>
-              <span>Me afecta también</span>
+              <span>{t('detail.affectedButton')}</span>
               <span style={{ fontSize: '18px', fontWeight: 700 }}>{affectedCount}</span>
             </button>
 
@@ -320,9 +309,9 @@ function ReportDetailPage() {
               }}
             >
               <span style={{ fontSize: '22px' }}>🔗</span>
-              <span>{copied ? '¡Enlace copiado!' : 'Compartir'}</span>
+              <span>{copied ? t('detail.linkCopied') : t('detail.share')}</span>
               <span style={{ fontSize: '12px', color: '#9ca3af', fontWeight: 400 }}>
-                redes sociales
+                {t('detail.shareSubtitle')}
               </span>
             </button>
           </div>

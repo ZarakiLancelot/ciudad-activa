@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from 'react-leaflet'
+import { useTranslation } from 'react-i18next'
 import 'leaflet/dist/leaflet.css'
 import { supabase } from '../lib/supabase'
 import type { Report, ReportCategory } from '../types'
@@ -8,6 +9,7 @@ import type { User } from '@supabase/supabase-js'
 import sjpLogo from '../assets/sjp.webp'
 import mixcoLogo from '../assets/mixco.png'
 import guatemalaLogo from '../assets/guatemala.png'
+import LanguageToggle from '../components/LanguageToggle'
 
 const CATEGORY_COLORS: Record<ReportCategory, string> = {
   pothole: '#f97316',
@@ -16,15 +18,6 @@ const CATEGORY_COLORS: Record<ReportCategory, string> = {
   water: '#3b82f6',
   trash: '#22c55e',
   other: '#8b5cf6',
-}
-
-const CATEGORY_LABELS: Record<ReportCategory, string> = {
-  pothole: 'Bache',
-  accident: 'Accidente',
-  lighting: 'Alumbrado',
-  water: 'Agua',
-  trash: 'Basura',
-  other: 'Otro',
 }
 
 const MUNICIPALITY_CONFIG = [
@@ -42,6 +35,7 @@ function MapController({ center }: { center: [number, number] }) {
 }
 
 function MapPage() {
+  const { t } = useTranslation()
   const [reports, setReports] = useState<Report[]>([])
   const [loading, setLoading] = useState(true)
   const [switching, setSwitching] = useState(false)
@@ -112,6 +106,15 @@ function MapPage() {
     ? reports.filter((r) => r.municipality_id === selectedMunicipalityId)
     : reports
 
+  const CATEGORIES_CONFIG: { category: ReportCategory }[] = [
+    { category: 'pothole' },
+    { category: 'accident' },
+    { category: 'lighting' },
+    { category: 'water' },
+    { category: 'trash' },
+    { category: 'other' },
+  ]
+
   return (
     <div className="map-page">
       {/* Loading overlay */}
@@ -135,14 +138,13 @@ function MapPage() {
           />
           <div style={{ textAlign: 'center' }}>
             <p style={{ fontSize: '18px', fontWeight: 700, color: '#16a34a' }}>CiudadActiva</p>
-            <p style={{ fontSize: '13px', color: '#9ca3af', marginTop: '4px' }}>Cargando reportes...</p>
+            <p style={{ fontSize: '13px', color: '#9ca3af', marginTop: '4px' }}>{t('map.loading')}</p>
           </div>
         </div>
       )}
 
       {/* Header */}
       <div className="map-header">
-        {/* Spacer izquierdo - solo desktop */}
         <div className="map-header-spacer" />
 
         {/* Título + selector */}
@@ -173,6 +175,7 @@ function MapPage() {
 
         {/* Acciones */}
         <div className="map-header-actions">
+          <LanguageToggle />
           {user && !user.is_anonymous ? (
             <>
               {isAdmin && (
@@ -189,7 +192,7 @@ function MapPage() {
                     cursor: 'pointer',
                   }}
                 >
-                  Panel
+                  {t('nav.panel')}
                 </button>
               )}
               <button
@@ -205,7 +208,7 @@ function MapPage() {
                   cursor: 'pointer',
                 }}
               >
-                Salir
+                {t('nav.signOut')}
               </button>
             </>
           ) : (
@@ -222,7 +225,7 @@ function MapPage() {
                 cursor: 'pointer',
               }}
             >
-              Ingresar
+              {t('nav.signIn')}
             </button>
           )}
         </div>
@@ -262,7 +265,7 @@ function MapPage() {
                   padding: '2px 6px',
                   marginBottom: '6px',
                 }}>
-                  {CATEGORY_LABELS[report.category]}
+                  {t(`categories.${report.category}`)}
                 </span>
                 <p style={{ fontWeight: 600, fontSize: '14px', marginBottom: '4px' }}>
                   {report.title}
@@ -285,7 +288,7 @@ function MapPage() {
                     cursor: 'pointer',
                   }}
                 >
-                  Ver detalle
+                  {t('map.viewDetail')}
                 </button>
               </div>
             </Popup>
@@ -316,16 +319,9 @@ function MapPage() {
             minWidth: '160px',
           }}>
             <p style={{ fontSize: '11px', fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '2px' }}>
-              Categorías
+              {t('map.legendTitle')}
             </p>
-            {([
-              { category: 'pothole',  label: 'Bache',      desc: 'Daño en pavimento' },
-              { category: 'accident', label: 'Accidente',  desc: 'Zona de riesgo vial' },
-              { category: 'lighting', label: 'Alumbrado',  desc: 'Falla en iluminación' },
-              { category: 'water',    label: 'Agua',        desc: 'Fuga o falta de agua' },
-              { category: 'trash',    label: 'Basura',      desc: 'Acumulación de desechos' },
-              { category: 'other',    label: 'Otro',        desc: 'Otro tipo de problema' },
-            ] as { category: ReportCategory; label: string; desc: string }[]).map((item) => (
+            {CATEGORIES_CONFIG.map((item) => (
               <div key={item.category} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <div style={{
                   width: '14px',
@@ -337,10 +333,10 @@ function MapPage() {
                 }} />
                 <div>
                   <p style={{ fontSize: '13px', fontWeight: 600, color: '#111827', lineHeight: 1.2 }}>
-                    {item.label}
+                    {t(`categories.${item.category}`)}
                   </p>
                   <p style={{ fontSize: '11px', color: '#6b7280', lineHeight: 1.2 }}>
-                    {item.desc}
+                    {t(`categoryDesc.${item.category}`)}
                   </p>
                 </div>
               </div>
@@ -348,7 +344,6 @@ function MapPage() {
           </div>
         )}
 
-        {/* Toggle button */}
         <button
           onClick={() => setShowLegend((v) => !v)}
           style={{
@@ -367,7 +362,7 @@ function MapPage() {
           }}
         >
           <span style={{ fontSize: '16px' }}>🗺️</span>
-          {showLegend ? 'Ocultar' : 'Leyenda'}
+          {showLegend ? t('map.legendHide') : t('map.legend')}
         </button>
       </div>
 
@@ -388,7 +383,7 @@ function MapPage() {
             alignItems: 'center',
             justifyContent: 'center',
           }}
-          title="Nuevo reporte"
+          title={t('map.newReportTooltip')}
         >
           <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
             <polygon points="16,2 31,29 1,29" fill="#F59E0B" />

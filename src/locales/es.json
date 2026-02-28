@@ -1,0 +1,100 @@
+{
+  "nav": {
+    "panel": "Panel",
+    "signIn": "Ingresar",
+    "signOut": "Salir"
+  },
+  "map": {
+    "loading": "Cargando reportes...",
+    "legend": "Leyenda",
+    "legendHide": "Ocultar",
+    "legendTitle": "Categorías",
+    "newReportTooltip": "Nuevo reporte",
+    "viewDetail": "Ver detalle"
+  },
+  "categories": {
+    "pothole": "Bache",
+    "accident": "Accidente",
+    "lighting": "Alumbrado",
+    "water": "Agua",
+    "trash": "Basura",
+    "other": "Otro"
+  },
+  "categoryDesc": {
+    "pothole": "Daño en pavimento",
+    "accident": "Zona de riesgo vial",
+    "lighting": "Falla en iluminación",
+    "water": "Fuga o falta de agua",
+    "trash": "Acumulación de desechos",
+    "other": "Otro tipo de problema"
+  },
+  "status": {
+    "pending": "Pendiente",
+    "in_progress": "En proceso",
+    "resolved": "Resuelto"
+  },
+  "newReport": {
+    "pageTitle": "Nuevo reporte",
+    "category": "Categoría",
+    "required": "*",
+    "titleField": "Título",
+    "titlePlaceholder": "Ej: Bache grande en calle principal",
+    "description": "Descripción",
+    "optional": "opcional",
+    "descriptionPlaceholder": "Describe el problema con más detalle...",
+    "media": "Foto / Video",
+    "uploadFile": "Subir archivo",
+    "useCamera": "Usar cámara",
+    "location": "Ubicación",
+    "useMyLocation": "Usar mi ubicación",
+    "gettingLocation": "Obteniendo ubicación...",
+    "orTapMap": "o toca el mapa para marcar el punto exacto",
+    "submit": "Enviar reporte",
+    "submitting": "Enviando...",
+    "errorCategoryLocation": "Selecciona una categoría y una ubicación en el mapa.",
+    "errorGps": "No se pudo obtener tu ubicación. Selecciónala en el mapa.",
+    "errorSubmit": "Ocurrió un error al enviar el reporte. Intenta de nuevo."
+  },
+  "detail": {
+    "loading": "Cargando reporte...",
+    "location": "Ubicación",
+    "reportedOn": "Reportado el",
+    "affectedButton": "Me afecta también",
+    "share": "Compartir",
+    "shareSubtitle": "redes sociales",
+    "linkCopied": "¡Enlace copiado!"
+  },
+  "auth": {
+    "signIn": "Iniciar sesión",
+    "signUp": "Registrarse",
+    "email": "Correo electrónico",
+    "emailPlaceholder": "tu@correo.com",
+    "password": "Contraseña",
+    "passwordPlaceholder": "Mínimo 6 caracteres",
+    "loading": "Cargando...",
+    "createAccount": "Crear cuenta",
+    "successMessage": "¡Cuenta creada! Revisa tu correo para confirmar tu registro.",
+    "anonymous": "Continuar sin cuenta",
+    "anonymousNote": "Sin cuenta puedes ver y reportar problemas, pero no podrás acceder a tu historial.",
+    "backToMap": "← Volver al mapa",
+    "errorInvalidCredentials": "Correo o contraseña incorrectos.",
+    "errorEmailNotConfirmed": "Debes confirmar tu correo antes de iniciar sesión.",
+    "errorAlreadyRegistered": "Ya existe una cuenta con ese correo.",
+    "errorWeakPassword": "La contraseña debe tener al menos 6 caracteres.",
+    "errorInvalidEmail": "El correo ingresado no es válido.",
+    "errorGeneric": "Ocurrió un error. Intenta de nuevo.",
+    "errorAnonymous": "No se pudo continuar de forma anónima. Intenta de nuevo."
+  },
+  "admin": {
+    "pageTitle": "Panel Municipal",
+    "subtitle": "San José Pinula",
+    "loading": "Cargando...",
+    "unauthorized": "Acceso restringido",
+    "unauthorizedMsg": "No tienes permisos para ver esta página.",
+    "backToMap": "Volver al mapa",
+    "total": "Total",
+    "noReports": "No hay reportes en esta categoría.",
+    "changeStatus": "Cambiar estado:",
+    "viewDetail": "Ver detalle"
+  }
+}

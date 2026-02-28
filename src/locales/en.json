@@ -1,0 +1,100 @@
+{
+  "nav": {
+    "panel": "Dashboard",
+    "signIn": "Sign in",
+    "signOut": "Sign out"
+  },
+  "map": {
+    "loading": "Loading reports...",
+    "legend": "Legend",
+    "legendHide": "Hide",
+    "legendTitle": "Categories",
+    "newReportTooltip": "New report",
+    "viewDetail": "View detail"
+  },
+  "categories": {
+    "pothole": "Pothole",
+    "accident": "Accident",
+    "lighting": "Street lighting",
+    "water": "Water",
+    "trash": "Trash",
+    "other": "Other"
+  },
+  "categoryDesc": {
+    "pothole": "Pavement damage",
+    "accident": "Traffic hazard zone",
+    "lighting": "Lighting failure",
+    "water": "Water leak or shortage",
+    "trash": "Waste accumulation",
+    "other": "Other type of issue"
+  },
+  "status": {
+    "pending": "Pending",
+    "in_progress": "In Progress",
+    "resolved": "Resolved"
+  },
+  "newReport": {
+    "pageTitle": "New report",
+    "category": "Category",
+    "required": "*",
+    "titleField": "Title",
+    "titlePlaceholder": "E.g.: Large pothole on main street",
+    "description": "Description",
+    "optional": "optional",
+    "descriptionPlaceholder": "Describe the problem in more detail...",
+    "media": "Photo / Video",
+    "uploadFile": "Upload file",
+    "useCamera": "Use camera",
+    "location": "Location",
+    "useMyLocation": "Use my location",
+    "gettingLocation": "Getting location...",
+    "orTapMap": "or tap the map to mark the exact point",
+    "submit": "Submit report",
+    "submitting": "Sending...",
+    "errorCategoryLocation": "Please select a category and a location on the map.",
+    "errorGps": "Could not get your location. Please select it on the map.",
+    "errorSubmit": "An error occurred while submitting the report. Please try again."
+  },
+  "detail": {
+    "loading": "Loading report...",
+    "location": "Location",
+    "reportedOn": "Reported on",
+    "affectedButton": "This affects me too",
+    "share": "Share",
+    "shareSubtitle": "social media",
+    "linkCopied": "Link copied!"
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "signUp": "Sign up",
+    "email": "Email address",
+    "emailPlaceholder": "your@email.com",
+    "password": "Password",
+    "passwordPlaceholder": "At least 6 characters",
+    "loading": "Loading...",
+    "createAccount": "Create account",
+    "successMessage": "Account created! Check your email to confirm your registration.",
+    "anonymous": "Continue without account",
+    "anonymousNote": "Without an account you can view and report issues, but you won't have access to your history.",
+    "backToMap": "← Back to map",
+    "errorInvalidCredentials": "Incorrect email or password.",
+    "errorEmailNotConfirmed": "Please confirm your email before signing in.",
+    "errorAlreadyRegistered": "An account with that email already exists.",
+    "errorWeakPassword": "Password must be at least 6 characters.",
+    "errorInvalidEmail": "The entered email is not valid.",
+    "errorGeneric": "An error occurred. Please try again.",
+    "errorAnonymous": "Could not continue anonymously. Please try again."
+  },
+  "admin": {
+    "pageTitle": "Municipal Dashboard",
+    "subtitle": "San José Pinula",
+    "loading": "Loading...",
+    "unauthorized": "Restricted access",
+    "unauthorizedMsg": "You don't have permission to view this page.",
+    "backToMap": "Back to map",
+    "total": "Total",
+    "noReports": "No reports in this category.",
+    "changeStatus": "Change status:",
+    "viewDetail": "View detail"
+  }
+}

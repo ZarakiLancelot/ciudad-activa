@@ -3,8 +3,10 @@ import { useNavigate, useLocation } from 'react-router'
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import type { ReportCategory } from '../types'
+import LanguageToggle from '../components/LanguageToggle'
 
 // Fix Leaflet default marker icons with Vite
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
@@ -16,13 +18,13 @@ L.Icon.Default.mergeOptions({ iconRetinaUrl: markerIcon2x, iconUrl: markerIcon, 
 
 const DEFAULT_CENTER = { lat: 14.5386, lng: -90.4125 }
 
-const CATEGORIES: { value: ReportCategory; label: string; color: string }[] = [
-  { value: 'pothole', label: 'Bache', color: '#f97316' },
-  { value: 'accident', label: 'Accidente', color: '#ef4444' },
-  { value: 'lighting', label: 'Alumbrado', color: '#eab308' },
-  { value: 'water', label: 'Agua', color: '#3b82f6' },
-  { value: 'trash', label: 'Basura', color: '#22c55e' },
-  { value: 'other', label: 'Otro', color: '#8b5cf6' },
+const CATEGORIES: { value: ReportCategory; color: string }[] = [
+  { value: 'pothole', color: '#f97316' },
+  { value: 'accident', color: '#ef4444' },
+  { value: 'lighting', color: '#eab308' },
+  { value: 'water', color: '#3b82f6' },
+  { value: 'trash', color: '#22c55e' },
+  { value: 'other', color: '#8b5cf6' },
 ]
 
 interface LatLng { lat: number; lng: number }
@@ -50,6 +52,7 @@ async function reverseGeocode(lat: number, lng: number): Promise<string> {
 }
 
 function NewReportPage() {
+  const { t } = useTranslation()
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [category, setCategory] = useState<ReportCategory | ''>('')
@@ -100,7 +103,7 @@ function NewReportPage() {
         setGpsLoading(false)
       },
       () => {
-        setError('No se pudo obtener tu ubicación. Selecciónala en el mapa.')
+        setError(t('newReport.errorGps'))
         setGpsLoading(false)
       }
     )
@@ -115,7 +118,7 @@ function NewReportPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!category || !location || !municipalityId) {
-      setError('Selecciona una categoría y una ubicación en el mapa.')
+      setError(t('newReport.errorCategoryLocation'))
       return
     }
 
@@ -167,7 +170,7 @@ function NewReportPage() {
 
       navigate(`/report/${report.id}`)
     } catch (err) {
-      setError('Ocurrió un error al enviar el reporte. Intenta de nuevo.')
+      setError(t('newReport.errorSubmit'))
       console.error(err)
     } finally {
       setSubmitting(false)
@@ -194,7 +197,8 @@ function NewReportPage() {
         >
           ←
         </button>
-        <h1 style={{ fontSize: '18px', fontWeight: 700 }}>Nuevo reporte</h1>
+        <h1 style={{ fontSize: '18px', fontWeight: 700, flex: 1 }}>{t('newReport.pageTitle')}</h1>
+        <LanguageToggle />
       </div>
 
       <form onSubmit={handleSubmit} style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '600px', margin: '0 auto' }}>
@@ -202,7 +206,7 @@ function NewReportPage() {
         {/* Category */}
         <div>
           <label style={{ display: 'block', fontWeight: 600, marginBottom: '8px' }}>
-            Categoría *
+            {t('newReport.category')} {t('newReport.required')}
           </label>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
             {CATEGORIES.map((cat) => (
@@ -221,7 +225,7 @@ function NewReportPage() {
                   cursor: 'pointer',
                 }}
               >
-                {cat.label}
+                {t(`categories.${cat.value}`)}
               </button>
             ))}
           </div>
@@ -230,13 +234,13 @@ function NewReportPage() {
         {/* Title */}
         <div>
           <label style={{ display: 'block', fontWeight: 600, marginBottom: '8px' }}>
-            Título *
+            {t('newReport.titleField')} {t('newReport.required')}
           </label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Ej: Bache grande en calle principal"
+            placeholder={t('newReport.titlePlaceholder')}
             required
             style={{
               width: '100%',
@@ -252,12 +256,12 @@ function NewReportPage() {
         {/* Description */}
         <div>
           <label style={{ display: 'block', fontWeight: 600, marginBottom: '8px' }}>
-            Descripción <span style={{ fontWeight: 400, color: '#9ca3af' }}>(opcional)</span>
+            {t('newReport.description')} <span style={{ fontWeight: 400, color: '#9ca3af' }}>({t('newReport.optional')})</span>
           </label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Describe el problema con más detalle..."
+            placeholder={t('newReport.descriptionPlaceholder')}
             rows={3}
             style={{
               width: '100%',
@@ -275,7 +279,7 @@ function NewReportPage() {
         {/* Photo */}
         <div>
           <label style={{ display: 'block', fontWeight: 600, marginBottom: '8px' }}>
-            Foto <span style={{ fontWeight: 400, color: '#9ca3af' }}>(opcional)</span>
+            {t('newReport.media')} <span style={{ fontWeight: 400, color: '#9ca3af' }}>({t('newReport.optional')})</span>
           </label>
           {mediaPreview ? (
             <div style={{ position: 'relative' }}>
@@ -350,7 +354,7 @@ function NewReportPage() {
                 }}
               >
                 <span style={{ fontSize: '24px' }}>📁</span>
-                Subir archivo
+                {t('newReport.uploadFile')}
               </button>
 
               <button
@@ -372,7 +376,7 @@ function NewReportPage() {
                 }}
               >
                 <span style={{ fontSize: '24px' }}>📷</span>
-                Usar cámara
+                {t('newReport.useCamera')}
               </button>
             </div>
           )}
@@ -381,7 +385,7 @@ function NewReportPage() {
         {/* Location */}
         <div>
           <label style={{ display: 'block', fontWeight: 600, marginBottom: '8px' }}>
-            Ubicación *
+            {t('newReport.location')} {t('newReport.required')}
           </label>
           <button
             type="button"
@@ -400,10 +404,10 @@ function NewReportPage() {
               cursor: 'pointer',
             }}
           >
-            {gpsLoading ? 'Obteniendo ubicación...' : '📍 Usar mi ubicación'}
+            {gpsLoading ? t('newReport.gettingLocation') : `📍 ${t('newReport.useMyLocation')}`}
           </button>
           <p style={{ fontSize: '12px', color: '#6b7280', marginBottom: '8px', textAlign: 'center' }}>
-            o toca el mapa para marcar el punto exacto
+            {t('newReport.orTapMap')}
           </p>
           <div style={{ height: '220px', borderRadius: '10px', overflow: 'hidden', border: '1px solid #e5e7eb' }}>
             <MapContainer
@@ -456,7 +460,7 @@ function NewReportPage() {
             marginBottom: '32px',
           }}
         >
-          {submitting ? 'Enviando...' : 'Enviar reporte'}
+          {submitting ? t('newReport.submitting') : t('newReport.submit')}
         </button>
       </form>
     </div>
