@@ -1,10 +1,13 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
+import LanguageToggle from '../components/LanguageToggle'
 
 type AuthMode = 'login' | 'register'
 
 function AuthPage() {
+  const { t } = useTranslation()
   const [mode, setMode] = useState<AuthMode>('login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -30,7 +33,7 @@ function AuthPage() {
       if (error) {
         setError(translateError(error.message))
       } else {
-        setSuccessMessage('¡Cuenta creada! Revisa tu correo para confirmar tu registro.')
+        setSuccessMessage(t('auth.successMessage'))
       }
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password })
@@ -49,7 +52,7 @@ function AuthPage() {
     setError(null)
     const { error } = await supabase.auth.signInAnonymously()
     if (error) {
-      setError('No se pudo continuar de forma anónima. Intenta de nuevo.')
+      setError(t('auth.errorAnonymous'))
     } else {
       navigate('/')
     }
@@ -57,12 +60,12 @@ function AuthPage() {
   }
 
   function translateError(msg: string): string {
-    if (msg.includes('Invalid login credentials')) return 'Correo o contraseña incorrectos.'
-    if (msg.includes('Email not confirmed')) return 'Debes confirmar tu correo antes de iniciar sesión.'
-    if (msg.includes('User already registered')) return 'Ya existe una cuenta con ese correo.'
-    if (msg.includes('Password should be at least')) return 'La contraseña debe tener al menos 6 caracteres.'
-    if (msg.includes('Unable to validate email address')) return 'El correo ingresado no es válido.'
-    return 'Ocurrió un error. Intenta de nuevo.'
+    if (msg.includes('Invalid login credentials')) return t('auth.errorInvalidCredentials')
+    if (msg.includes('Email not confirmed')) return t('auth.errorEmailNotConfirmed')
+    if (msg.includes('User already registered')) return t('auth.errorAlreadyRegistered')
+    if (msg.includes('Password should be at least')) return t('auth.errorWeakPassword')
+    if (msg.includes('Unable to validate email address')) return t('auth.errorInvalidEmail')
+    return t('auth.errorGeneric')
   }
 
   return (
@@ -74,7 +77,11 @@ function AuthPage() {
       justifyContent: 'center',
       background: '#f9fafb',
       padding: '24px 16px',
+      position: 'relative',
     }}>
+      <div style={{ position: 'absolute', top: '16px', right: '16px' }}>
+        <LanguageToggle />
+      </div>
       {/* Logo */}
       <div style={{ textAlign: 'center', marginBottom: '32px' }}>
         <h1 style={{ fontSize: '28px', fontWeight: 800, color: '#16a34a', marginBottom: '4px' }}>
@@ -118,7 +125,7 @@ function AuthPage() {
                 transition: 'all 0.15s',
               }}
             >
-              {m === 'login' ? 'Iniciar sesión' : 'Registrarse'}
+              {m === 'login' ? t('auth.signIn') : t('auth.signUp')}
             </button>
           ))}
         </div>
@@ -127,13 +134,13 @@ function AuthPage() {
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
           <div>
             <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '6px', color: '#374151' }}>
-              Correo electrónico
+              {t('auth.email')}
             </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="tu@correo.com"
+              placeholder={t('auth.emailPlaceholder')}
               required
               style={{
                 width: '100%',
@@ -148,13 +155,13 @@ function AuthPage() {
 
           <div>
             <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '6px', color: '#374151' }}>
-              Contraseña
+              {t('auth.password')}
             </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Mínimo 6 caracteres"
+              placeholder={t('auth.passwordPlaceholder')}
               required
               minLength={6}
               style={{
@@ -210,8 +217,8 @@ function AuthPage() {
             }}
           >
             {loading
-              ? 'Cargando...'
-              : mode === 'login' ? 'Iniciar sesión' : 'Crear cuenta'
+              ? t('auth.loading')
+              : mode === 'login' ? t('auth.signIn') : t('auth.createAccount')
             }
           </button>
         </form>
@@ -247,11 +254,11 @@ function AuthPage() {
             cursor: anonLoading ? 'not-allowed' : 'pointer',
           }}
         >
-          {anonLoading ? 'Cargando...' : '👤 Continuar sin cuenta'}
+          {anonLoading ? t('auth.loading') : `👤 ${t('auth.anonymous')}`}
         </button>
 
         <p style={{ fontSize: '12px', color: '#9ca3af', textAlign: 'center', marginTop: '12px' }}>
-          Sin cuenta puedes ver y reportar problemas, pero no podrás acceder a tu historial.
+          {t('auth.anonymousNote')}
         </p>
       </div>
 
@@ -268,7 +275,7 @@ function AuthPage() {
           textDecoration: 'underline',
         }}
       >
-        ← Volver al mapa
+        {t('auth.backToMap')}
       </button>
     </div>
   )

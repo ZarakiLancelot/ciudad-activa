@@ -1,16 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import type { Report, ReportCategory, ReportStatus } from '../types'
-
-const CATEGORY_LABELS: Record<ReportCategory, string> = {
-  pothole: 'Bache',
-  accident: 'Accidente',
-  lighting: 'Alumbrado',
-  water: 'Agua',
-  trash: 'Basura',
-  other: 'Otro',
-}
+import LanguageToggle from '../components/LanguageToggle'
 
 const CATEGORY_COLORS: Record<ReportCategory, string> = {
   pothole: '#f97316',
@@ -21,10 +14,10 @@ const CATEGORY_COLORS: Record<ReportCategory, string> = {
   other: '#8b5cf6',
 }
 
-const STATUS_OPTIONS: { value: ReportStatus; label: string; bg: string; color: string }[] = [
-  { value: 'pending', label: 'Pendiente', bg: '#fef3c7', color: '#92400e' },
-  { value: 'in_progress', label: 'En proceso', bg: '#dbeafe', color: '#1e40af' },
-  { value: 'resolved', label: 'Resuelto', bg: '#dcfce7', color: '#166534' },
+const STATUS_OPTIONS: { value: ReportStatus; bg: string; color: string }[] = [
+  { value: 'pending', bg: '#fef3c7', color: '#92400e' },
+  { value: 'in_progress', bg: '#dbeafe', color: '#1e40af' },
+  { value: 'resolved', bg: '#dcfce7', color: '#166534' },
 ]
 
 function formatDate(dateStr: string) {
@@ -36,6 +29,7 @@ function formatDate(dateStr: string) {
 }
 
 function AdminPage() {
+  const { t } = useTranslation()
   const [reports, setReports] = useState<Report[]>([])
   const [loading, setLoading] = useState(true)
   const [unauthorized, setUnauthorized] = useState(false)
@@ -101,7 +95,7 @@ function AdminPage() {
   if (loading) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-        <p style={{ color: '#6b7280' }}>Cargando...</p>
+        <p style={{ color: '#6b7280' }}>{t('admin.loading')}</p>
       </div>
     )
   }
@@ -110,13 +104,13 @@ function AdminPage() {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: '16px' }}>
         <p style={{ fontSize: '48px' }}>🔒</p>
-        <p style={{ fontWeight: 700, fontSize: '18px' }}>Acceso restringido</p>
-        <p style={{ color: '#6b7280', fontSize: '14px' }}>No tienes permisos para ver esta página.</p>
+        <p style={{ fontWeight: 700, fontSize: '18px' }}>{t('admin.unauthorized')}</p>
+        <p style={{ color: '#6b7280', fontSize: '14px' }}>{t('admin.unauthorizedMsg')}</p>
         <button
           onClick={() => navigate('/')}
           style={{ padding: '10px 20px', background: '#16a34a', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}
         >
-          Volver al mapa
+          {t('admin.backToMap')}
         </button>
       </div>
     )
@@ -142,20 +136,21 @@ function AdminPage() {
         >
           ←
         </button>
-        <div>
-          <h1 style={{ fontSize: '18px', fontWeight: 700 }}>Panel Municipal</h1>
-          <p style={{ fontSize: '12px', color: '#6b7280' }}>San José Pinula</p>
+        <div style={{ flex: 1 }}>
+          <h1 style={{ fontSize: '18px', fontWeight: 700 }}>{t('admin.pageTitle')}</h1>
+          <p style={{ fontSize: '12px', color: '#6b7280' }}>{t('admin.subtitle')}</p>
         </div>
+        <LanguageToggle />
       </div>
 
       <div style={{ padding: '16px', maxWidth: '800px', margin: '0 auto' }}>
         {/* Stats */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', marginBottom: '20px' }}>
           {[
-            { key: 'all', label: 'Total', bg: '#f3f4f6', color: '#111827' },
-            { key: 'pending', label: 'Pendientes', bg: '#fef3c7', color: '#92400e' },
-            { key: 'in_progress', label: 'En proceso', bg: '#dbeafe', color: '#1e40af' },
-            { key: 'resolved', label: 'Resueltos', bg: '#dcfce7', color: '#166534' },
+            { key: 'all', label: t('admin.total'), bg: '#f3f4f6', color: '#111827' },
+            { key: 'pending', label: t('status.pending'), bg: '#fef3c7', color: '#92400e' },
+            { key: 'in_progress', label: t('status.in_progress'), bg: '#dbeafe', color: '#1e40af' },
+            { key: 'resolved', label: t('status.resolved'), bg: '#dcfce7', color: '#166534' },
           ].map((stat) => (
             <button
               key={stat.key}
@@ -181,7 +176,7 @@ function AdminPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {filtered.length === 0 && (
             <p style={{ textAlign: 'center', color: '#9ca3af', padding: '40px 0' }}>
-              No hay reportes en esta categoría.
+              {t('admin.noReports')}
             </p>
           )}
           {filtered.map((report) => {
@@ -212,14 +207,14 @@ function AdminPage() {
                         background: CATEGORY_COLORS[report.category],
                         padding: '2px 8px', borderRadius: '999px',
                       }}>
-                        {CATEGORY_LABELS[report.category]}
+                        {t(`categories.${report.category}`)}
                       </span>
                       <span style={{
                         fontSize: '11px', fontWeight: 600,
                         background: statusOption.bg, color: statusOption.color,
                         padding: '2px 8px', borderRadius: '999px',
                       }}>
-                        {statusOption.label}
+                        {t(`status.${statusOption.value}`)}
                       </span>
                     </div>
 
@@ -245,7 +240,7 @@ function AdminPage() {
                   gap: '8px',
                   alignItems: 'center',
                 }}>
-                  <span style={{ fontSize: '12px', color: '#6b7280', marginRight: '4px' }}>Cambiar estado:</span>
+                  <span style={{ fontSize: '12px', color: '#6b7280', marginRight: '4px' }}>{t('admin.changeStatus')}</span>
                   {STATUS_OPTIONS.map((opt) => (
                     <button
                       key={opt.value}
@@ -263,7 +258,7 @@ function AdminPage() {
                         opacity: updatingId === report.id && report.status !== opt.value ? 0.5 : 1,
                       }}
                     >
-                      {opt.label}
+                      {t(`status.${opt.value}`)}
                     </button>
                   ))}
                   <button
@@ -280,7 +275,7 @@ function AdminPage() {
                       cursor: 'pointer',
                     }}
                   >
-                    Ver detalle
+                    {t('admin.viewDetail')}
                   </button>
                 </div>
               </div>
