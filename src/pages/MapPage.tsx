@@ -140,23 +140,11 @@ function MapPage() {
       )}
 
       {/* Header */}
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 1000,
-        background: 'white',
-        padding: '10px 16px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-      }}>
-        {/* Spacer izquierdo */}
-        <div style={{ flex: 1 }} />
+      <div className="map-header">
+        {/* Spacer izquierdo - solo desktop */}
+        <div className="map-header-spacer" />
 
-        {/* Título + selector centrado */}
+        {/* Título + selector */}
         <div style={{ textAlign: 'center' }}>
           <h1 style={{ fontSize: '18px', fontWeight: 700, color: '#16a34a', lineHeight: 1.2 }}>
             CiudadActiva
@@ -182,8 +170,8 @@ function MapPage() {
           </select>
         </div>
 
-        {/* Acciones derecha */}
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '10px' }}>
+        {/* Acciones */}
+        <div className="map-header-actions">
           {user && !user.is_anonymous ? (
             <>
               {isAdmin && (
@@ -207,11 +195,12 @@ function MapPage() {
                 onClick={async () => { await supabase.auth.signOut(); navigate('/auth') }}
                 style={{
                   padding: '6px 12px',
-                  background: 'none',
-                  border: '1px solid #e5e7eb',
+                  background: '#fef2f2',
+                  border: '1px solid #fecaca',
                   borderRadius: '8px',
                   fontSize: '12px',
-                  color: '#6b7280',
+                  fontWeight: 600,
+                  color: '#dc2626',
                   cursor: 'pointer',
                 }}
               >
