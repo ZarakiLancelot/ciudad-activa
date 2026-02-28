@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useParams, useNavigate } from 'react-router'
+import { useParams, useNavigate, useLocation } from 'react-router'
 import { MapContainer, TileLayer, CircleMarker } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import { supabase } from '../lib/supabase'
@@ -48,6 +48,8 @@ function formatDate(dateStr: string) {
 function ReportDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const location = useLocation()
+  const backTo: string = (location.state as { from?: string })?.from ?? '/'
   const [report, setReport] = useState<Report | null>(null)
   const [affectedCount, setAffectedCount] = useState(0)
   const [hasVoted, setHasVoted] = useState(false)
@@ -179,7 +181,7 @@ function ReportDetailPage() {
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
       }}>
         <button
-          onClick={() => navigate('/')}
+          onClick={() => navigate(backTo)}
           style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', padding: '4px' }}
         >
           ←

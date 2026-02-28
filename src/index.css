@@ -16,3 +16,26 @@ body {
   background-color: #f5f5f5;
   color: #1a1a1a;
 }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.92); }
+}
+
+.logo-pulse {
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+.map-page {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .map-page {
+    width: 90%;
+    margin: 0 auto;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.15);
+  }
+}
