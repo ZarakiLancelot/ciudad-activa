@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router'
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet'
 import L from 'leaflet'
@@ -56,6 +56,8 @@ function NewReportPage() {
   const [media, setMedia] = useState<File | null>(null)
   const [mediaPreview, setMediaPreview] = useState<string | null>(null)
   const [mediaType, setMediaType] = useState<'image' | 'video' | null>(null)
+  const galleryInputRef = useRef<HTMLInputElement>(null)
+  const cameraInputRef = useRef<HTMLInputElement>(null)
   const [location, setLocation] = useState<LatLng | null>(null)
   const [address, setAddress] = useState('')
   const [gpsLoading, setGpsLoading] = useState(false)
@@ -308,42 +310,66 @@ function NewReportPage() {
             </div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-              <label style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '6px',
-                padding: '20px 12px',
-                border: '2px dashed #d1d5db',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                color: '#6b7280',
-                fontSize: '13px',
-                textAlign: 'center',
-              }}>
+              {/* Hidden inputs */}
+              <input
+                ref={galleryInputRef}
+                type="file"
+                accept="image/*,video/*"
+                onChange={handlePhotoChange}
+                style={{ display: 'none' }}
+              />
+              <input
+                ref={cameraInputRef}
+                type="file"
+                accept="image/*"
+                capture="environment"
+                onChange={handlePhotoChange}
+                style={{ display: 'none' }}
+              />
+
+              <button
+                type="button"
+                onClick={() => galleryInputRef.current?.click()}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px',
+                  padding: '20px 12px',
+                  border: '2px dashed #d1d5db',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  color: '#6b7280',
+                  fontSize: '13px',
+                  background: 'white',
+                }}
+              >
                 <span style={{ fontSize: '24px' }}>📁</span>
                 Subir archivo
-                <input type="file" accept="image/*,video/*" onChange={handlePhotoChange} style={{ display: 'none' }} />
-              </label>
-              <label style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '6px',
-                padding: '20px 12px',
-                border: '2px dashed #d1d5db',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                color: '#6b7280',
-                fontSize: '13px',
-                textAlign: 'center',
-              }}>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => cameraInputRef.current?.click()}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px',
+                  padding: '20px 12px',
+                  border: '2px dashed #d1d5db',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  color: '#6b7280',
+                  fontSize: '13px',
+                  background: 'white',
+                }}
+              >
                 <span style={{ fontSize: '24px' }}>📷</span>
                 Usar cámara
-                <input type="file" accept="image/*,video/*" capture="environment" onChange={handlePhotoChange} style={{ display: 'none' }} />
-              </label>
+              </button>
             </div>
           )}
         </div>
