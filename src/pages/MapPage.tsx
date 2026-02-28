@@ -4,6 +4,7 @@ import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import { supabase } from '../lib/supabase'
 import type { Report, ReportCategory } from '../types'
+import type { User } from '@supabase/supabase-js'
 
 const SAN_JOSE_PINULA = { lat: 14.5386, lng: -90.4125 }
 
@@ -28,6 +29,7 @@ const CATEGORY_LABELS: Record<ReportCategory, string> = {
 function MapPage() {
   const [reports, setReports] = useState<Report[]>([])
   const [loading, setLoading] = useState(true)
+  const [user, setUser] = useState<User | null>(null)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -41,7 +43,19 @@ function MapPage() {
       setLoading(false)
     }
 
+    async function fetchUser() {
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
+    }
+
     fetchReports()
+    fetchUser()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+    })
+
+    return () => subscription.unsubscribe()
   }, [])
 
   return (
@@ -66,9 +80,43 @@ function MapPage() {
           </h1>
           <p style={{ fontSize: '12px', color: '#6b7280' }}>San José Pinula</p>
         </div>
-        <span style={{ fontSize: '13px', color: '#6b7280' }}>
-          {loading ? 'Cargando...' : `${reports.length} reporte${reports.length !== 1 ? 's' : ''}`}
-        </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span style={{ fontSize: '13px', color: '#6b7280' }}>
+            {loading ? 'Cargando...' : `${reports.length} reporte${reports.length !== 1 ? 's' : ''}`}
+          </span>
+          {user && !user.is_anonymous ? (
+            <button
+              onClick={async () => { await supabase.auth.signOut(); navigate('/auth') }}
+              style={{
+                padding: '6px 12px',
+                background: 'none',
+                border: '1px solid #e5e7eb',
+                borderRadius: '8px',
+                fontSize: '12px',
+                color: '#6b7280',
+                cursor: 'pointer',
+              }}
+            >
+              Salir
+            </button>
+          ) : (
+            <button
+              onClick={() => navigate('/auth')}
+              style={{
+                padding: '6px 12px',
+                background: '#16a34a',
+                border: 'none',
+                borderRadius: '8px',
+                fontSize: '12px',
+                fontWeight: 600,
+                color: 'white',
+                cursor: 'pointer',
+              }}
+            >
+              Ingresar
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Map */}
