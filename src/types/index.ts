@@ -13,6 +13,7 @@ export interface Profile {
   id: string
   display_name: string | null
   is_anonymous: boolean
+  is_admin: boolean
   municipality_id: string
   created_at: string
 }

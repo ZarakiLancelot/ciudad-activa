@@ -30,6 +30,7 @@ function MapPage() {
   const [reports, setReports] = useState<Report[]>([])
   const [loading, setLoading] = useState(true)
   const [user, setUser] = useState<User | null>(null)
+  const [isAdmin, setIsAdmin] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -46,6 +47,14 @@ function MapPage() {
     async function fetchUser() {
       const { data: { user } } = await supabase.auth.getUser()
       setUser(user)
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('is_admin')
+          .eq('id', user.id)
+          .single()
+        setIsAdmin(profile?.is_admin ?? false)
+      }
     }
 
     fetchReports()
@@ -59,7 +68,7 @@ function MapPage() {
   }, [])
 
   return (
-    <div style={{ position: 'relative', height: '100%', width: '100%' }}>
+    <div className="map-page">
       {/* Header */}
       <div style={{
         position: 'absolute',
@@ -74,31 +83,53 @@ function MapPage() {
         justifyContent: 'space-between',
         boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
       }}>
-        <div>
+        {/* Spacer izquierdo */}
+        <div style={{ flex: 1 }} />
+
+        {/* Título centrado */}
+        <div style={{ textAlign: 'center' }}>
           <h1 style={{ fontSize: '18px', fontWeight: 700, color: '#16a34a' }}>
             CiudadActiva
           </h1>
           <p style={{ fontSize: '12px', color: '#6b7280' }}>San José Pinula</p>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span style={{ fontSize: '13px', color: '#6b7280' }}>
-            {loading ? 'Cargando...' : `${reports.length} reporte${reports.length !== 1 ? 's' : ''}`}
-          </span>
+
+        {/* Acciones derecha */}
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '10px' }}>
           {user && !user.is_anonymous ? (
-            <button
-              onClick={async () => { await supabase.auth.signOut(); navigate('/auth') }}
-              style={{
-                padding: '6px 12px',
-                background: 'none',
-                border: '1px solid #e5e7eb',
-                borderRadius: '8px',
-                fontSize: '12px',
-                color: '#6b7280',
-                cursor: 'pointer',
-              }}
-            >
-              Salir
-            </button>
+            <>
+              {isAdmin && (
+                <button
+                  onClick={() => navigate('/admin')}
+                  style={{
+                    padding: '6px 12px',
+                    background: '#1e40af',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontSize: '12px',
+                    fontWeight: 600,
+                    color: 'white',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Panel
+                </button>
+              )}
+              <button
+                onClick={async () => { await supabase.auth.signOut(); navigate('/auth') }}
+                style={{
+                  padding: '6px 12px',
+                  background: 'none',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '8px',
+                  fontSize: '12px',
+                  color: '#6b7280',
+                  cursor: 'pointer',
+                }}
+              >
+                Salir
+              </button>
+            </>
           ) : (
             <button
               onClick={() => navigate('/auth')}

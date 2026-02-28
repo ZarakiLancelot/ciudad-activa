@@ -16,3 +16,17 @@ body {
   background-color: #f5f5f5;
   color: #1a1a1a;
 }
+
+.map-page {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .map-page {
+    width: 90%;
+    margin: 0 auto;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.15);
+  }
+}
