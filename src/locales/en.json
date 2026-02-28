@@ -87,7 +87,8 @@
   },
   "admin": {
     "pageTitle": "Municipal Dashboard",
-    "subtitle": "San José Pinula",
+    "subtitle": "All municipalities",
+    "allMunicipalities": "All municipalities",
     "loading": "Loading...",
     "unauthorized": "Restricted access",
     "unauthorizedMsg": "You don't have permission to view this page.",
