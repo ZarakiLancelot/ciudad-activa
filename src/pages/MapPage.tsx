@@ -47,6 +47,7 @@ function MapPage() {
   const [switching, setSwitching] = useState(false)
   const [user, setUser] = useState<User | null>(null)
   const [isAdmin, setIsAdmin] = useState(false)
+  const [showLegend, setShowLegend] = useState(false)
   const [selectedSlug, setSelectedSlug] = useState(
     () => localStorage.getItem('selectedMunicipality') ?? 'san-jose-pinula'
   )
@@ -291,6 +292,84 @@ function MapPage() {
           </CircleMarker>
         ))}
       </MapContainer>
+
+      {/* Leyenda */}
+      <div style={{
+        position: 'absolute',
+        bottom: '40px',
+        left: '16px',
+        zIndex: 1000,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        gap: '6px',
+      }}>
+        {showLegend && (
+          <div style={{
+            background: 'white',
+            borderRadius: '12px',
+            padding: '12px 14px',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px',
+            minWidth: '160px',
+          }}>
+            <p style={{ fontSize: '11px', fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '2px' }}>
+              Categorías
+            </p>
+            {([
+              { category: 'pothole',  label: 'Bache',      desc: 'Daño en pavimento' },
+              { category: 'accident', label: 'Accidente',  desc: 'Zona de riesgo vial' },
+              { category: 'lighting', label: 'Alumbrado',  desc: 'Falla en iluminación' },
+              { category: 'water',    label: 'Agua',        desc: 'Fuga o falta de agua' },
+              { category: 'trash',    label: 'Basura',      desc: 'Acumulación de desechos' },
+              { category: 'other',    label: 'Otro',        desc: 'Otro tipo de problema' },
+            ] as { category: ReportCategory; label: string; desc: string }[]).map((item) => (
+              <div key={item.category} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{
+                  width: '14px',
+                  height: '14px',
+                  borderRadius: '50%',
+                  background: CATEGORY_COLORS[item.category],
+                  flexShrink: 0,
+                  boxShadow: `0 0 0 2px ${CATEGORY_COLORS[item.category]}40`,
+                }} />
+                <div>
+                  <p style={{ fontSize: '13px', fontWeight: 600, color: '#111827', lineHeight: 1.2 }}>
+                    {item.label}
+                  </p>
+                  <p style={{ fontSize: '11px', color: '#6b7280', lineHeight: 1.2 }}>
+                    {item.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Toggle button */}
+        <button
+          onClick={() => setShowLegend((v) => !v)}
+          style={{
+            padding: '8px 14px',
+            background: 'white',
+            border: 'none',
+            borderRadius: '20px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+            fontSize: '13px',
+            fontWeight: 600,
+            color: '#374151',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+          }}
+        >
+          <span style={{ fontSize: '16px' }}>🗺️</span>
+          {showLegend ? 'Ocultar' : 'Leyenda'}
+        </button>
+      </div>
 
       {/* FAB - Nuevo reporte estilo Waze */}
       <div style={{ position: 'absolute', bottom: '40px', right: '40px', zIndex: 1000, width: '56px', height: '56px' }}>
