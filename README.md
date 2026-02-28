@@ -4,7 +4,7 @@
 
 > A civic reporting platform that empowers citizens to report urban problems directly to their municipality — with photos, exact location, and community support.
 
-Built for the [DEV Weekend Challenge](https://dev.to/devteam/happening-now-dev-weekend-challenge-submissions-due-march-2-at-759am-utc-5fg8?) 🏆
+Built for the [DEV Weekend Challenge](https://dev.to/challenges/weekend-2026-02-28) 🏆
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-ciudad--activa--gt.vercel.app-16a34a?style=for-the-badge)](https://ciudad-activa-gt.vercel.app)
 
@@ -35,13 +35,13 @@ In municipalities like San José Pinula, Guatemala, citizens have no efficient w
 
 ### For Municipalities
 
-- 📋 **Admin dashboard** with all reports filterable by status
+- 📋 **Admin dashboard** with all reports filterable by municipality and status
 - 🔄 **Update report status** — Pending → In Progress → Resolved
 - 📊 **At-a-glance stats** — total, pending, in progress, resolved
 
 ### Platform
 
-- 🏙️ **Multi-municipality** — currently San José Pinula, Mixco, and Guatemala City
+- 🏙️ **Multi-municipality** — currently San José Pinula, Mixco, Guatemala, Fraijanes, Santa Catarina Pinula, Villa Canales, and Villa Nueva
 - 📱 **Mobile-first** — optimized for smartphones, with direct camera access
 - 🔒 **Row Level Security** — data access enforced at the database level
 
@@ -68,9 +68,12 @@ In municipalities like San José Pinula, Guatemala, citizens have no efficient w
 src/
 ├── assets/          # Municipality logos
 ├── components/      # Reusable components
-├── hooks/           # Custom React hooks
 ├── lib/
-│   └── supabase.ts  # Supabase client
+│   ├── supabase.ts  # Supabase client
+│   └── i18n.ts      # i18next configuration
+├── locales/
+│   ├── en.json      # English translations
+│   └── es.json      # Spanish translations
 ├── pages/
 │   ├── MapPage.tsx             # Main map view
 │   ├── NewReportPage.tsx       # Create report form
@@ -133,9 +136,13 @@ create table municipalities (
 );
 
 insert into municipalities (name, slug) values
-  ('San José Pinula', 'san-jose-pinula'),
-  ('Mixco', 'mixco'),
-  ('Guatemala', 'guatemala');
+  ('San José Pinula',       'san-jose-pinula'),
+  ('Mixco',                 'mixco'),
+  ('Guatemala',             'guatemala'),
+  ('Fraijanes',             'fraijanes'),
+  ('Santa Catarina Pinula', 'santa-catarina-pinula'),
+  ('Villa Canales',         'villa-canales'),
+  ('Villa Nueva',           'villa-nueva');
 
 -- Profiles
 create table profiles (
@@ -274,7 +281,7 @@ This project is deployed on [Vercel](https://vercel.com). To deploy your own ins
 - [ ] Municipality dashboard with analytics and charts
 - [ ] Push notifications when report status changes
 - [ ] PWA with offline support
-- [ ] Multi-language UI (English / Spanish)
+- [x] Multi-language UI (English / Spanish)
 - [ ] Municipality self-service onboarding
 - [ ] Mobile app (React Native)
 - [ ] Duplicate report detection by proximity
@@ -290,4 +297,4 @@ Contributions are welcome! Please open an issue first to discuss what you would 
 
 ## 📄 License
 
-MIT © 2026 — Built with ❤️ for the [DEV Weekend Challenge](https://dev.to/devteam/happening-now-dev-weekend-challenge-submissions-due-march-2-at-759am-utc-5fg8?)
+MIT © 2026 — Built with ❤️ for the [DEV Weekend Challenge](https://dev.to/challenges/weekend-2026-02-28)

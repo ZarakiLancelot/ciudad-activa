@@ -4,7 +4,7 @@
 
 > Una plataforma de reportes ciudadanos que empodera a los vecinos para reportar problemas urbanos directamente a su municipalidad — con fotos, ubicación exacta y respaldo de la comunidad.
 
-Desarrollado para el [DEV Weekend Challenge](https://dev.to/devteam/happening-now-dev-weekend-challenge-submissions-due-march-2-at-759am-utc-5fg8?) 🏆
+Desarrollado para el [DEV Weekend Challenge](https://dev.to/challenges/weekend-2026-02-28) 🏆
 
 [![Demo en Vivo](https://img.shields.io/badge/Demo%20en%20Vivo-ciudad--activa--gt.vercel.app-16a34a?style=for-the-badge)](https://ciudad-activa-gt.vercel.app)
 
@@ -35,13 +35,13 @@ En municipios como San José Pinula, Guatemala, los vecinos no tienen una forma 
 
 ### Para municipalidades
 
-- 📋 **Panel de administración** con todos los reportes filtrables por estado
+- 📋 **Panel de administración** con todos los reportes filtrables por municipalidad y estado
 - 🔄 **Actualizar estado del reporte** — Pendiente → En proceso → Resuelto
 - 📊 **Estadísticas de un vistazo** — total, pendientes, en proceso, resueltos
 
 ### Plataforma
 
-- 🏙️ **Multi-municipalidad** — actualmente San José Pinula, Mixco y Guatemala
+- 🏙️ **Multi-municipalidad** — actualmente San José Pinula, Mixco, Guatemala, Fraijanes, Santa Catarina Pinula, Villa Canales y Villa Nueva
 - 📱 **Mobile-first** — optimizado para smartphones, con acceso directo a la cámara
 - 🔒 **Row Level Security** — acceso a datos reforzado a nivel de base de datos
 
@@ -68,9 +68,12 @@ En municipios como San José Pinula, Guatemala, los vecinos no tienen una forma 
 src/
 ├── assets/          # Logos de municipalidades
 ├── components/      # Componentes reutilizables
-├── hooks/           # Custom hooks de React
 ├── lib/
-│   └── supabase.ts  # Cliente de Supabase
+│   ├── supabase.ts  # Cliente de Supabase
+│   └── i18n.ts      # Configuración de i18next
+├── locales/
+│   ├── en.json      # Traducciones en inglés
+│   └── es.json      # Traducciones en español
 ├── pages/
 │   ├── MapPage.tsx             # Vista del mapa principal
 │   ├── NewReportPage.tsx       # Formulario de nuevo reporte
@@ -133,9 +136,13 @@ create table municipalities (
 );
 
 insert into municipalities (name, slug) values
-  ('San José Pinula', 'san-jose-pinula'),
-  ('Mixco', 'mixco'),
-  ('Guatemala', 'guatemala');
+  ('San José Pinula',       'san-jose-pinula'),
+  ('Mixco',                 'mixco'),
+  ('Guatemala',             'guatemala'),
+  ('Fraijanes',             'fraijanes'),
+  ('Santa Catarina Pinula', 'santa-catarina-pinula'),
+  ('Villa Canales',         'villa-canales'),
+  ('Villa Nueva',           'villa-nueva');
 
 -- Perfiles
 create table profiles (
@@ -274,7 +281,7 @@ Este proyecto está desplegado en [Vercel](https://vercel.com). Para desplegar t
 - [ ] Panel municipal con analíticas y gráficos
 - [ ] Notificaciones push cuando cambia el estado de un reporte
 - [ ] PWA con soporte offline
-- [ ] UI multilenguaje (inglés / español)
+- [x] UI multilenguaje (inglés / español)
 - [ ] Onboarding self-service de nuevas municipalidades
 - [ ] App móvil (React Native)
 - [ ] Detección de reportes duplicados por proximidad
@@ -290,4 +297,4 @@ Este proyecto está desplegado en [Vercel](https://vercel.com). Para desplegar t
 
 ## 📄 Licencia
 
-MIT © 2026 — Hecho con ❤️ para el [DEV Weekend Challenge](https://dev.to/devteam/happening-now-dev-weekend-challenge-submissions-due-march-2-at-759am-utc-5fg8?)
+MIT © 2026 — Hecho con ❤️ para el [DEV Weekend Challenge](https://dev.to/challenges/weekend-2026-02-28)

@@ -87,7 +87,8 @@
   },
   "admin": {
     "pageTitle": "Panel Municipal",
-    "subtitle": "San José Pinula",
+    "subtitle": "Todos los municipios",
+    "allMunicipalities": "Todos los municipios",
     "loading": "Cargando...",
     "unauthorized": "Acceso restringido",
     "unauthorizedMsg": "No tienes permisos para ver esta página.",

@@ -9,6 +9,10 @@ import type { User } from '@supabase/supabase-js'
 import sjpLogo from '../assets/sjp.webp'
 import mixcoLogo from '../assets/mixco.png'
 import guatemalaLogo from '../assets/guatemala.png'
+import fraijanesLogo from '../assets/fraijanes.png'
+import scpLogo from '../assets/scp.png'
+import vcLogo from '../assets/vc.png'
+import vnLogo from '../assets/vn.png'
 import LanguageToggle from '../components/LanguageToggle'
 
 const CATEGORY_COLORS: Record<ReportCategory, string> = {
@@ -21,9 +25,13 @@ const CATEGORY_COLORS: Record<ReportCategory, string> = {
 }
 
 const MUNICIPALITY_CONFIG = [
-  { slug: 'san-jose-pinula', name: 'San José Pinula', lat: 14.5386, lng: -90.4125, logo: sjpLogo },
-  { slug: 'mixco',           name: 'Mixco',           lat: 14.6335, lng: -90.6064, logo: mixcoLogo },
-  { slug: 'guatemala',       name: 'Guatemala',       lat: 14.6349, lng: -90.5069, logo: guatemalaLogo },
+  { slug: 'san-jose-pinula',       name: 'San José Pinula',       lat: 14.5386, lng: -90.4125, logo: sjpLogo },
+  { slug: 'mixco',                 name: 'Mixco',                 lat: 14.6335, lng: -90.6064, logo: mixcoLogo },
+  { slug: 'guatemala',             name: 'Guatemala',             lat: 14.6349, lng: -90.5069, logo: guatemalaLogo },
+  { slug: 'fraijanes',             name: 'Fraijanes',             lat: 14.4600, lng: -90.4328, logo: fraijanesLogo },
+  { slug: 'santa-catarina-pinula', name: 'Santa Catarina Pinula', lat: 14.5708, lng: -90.4883, logo: scpLogo },
+  { slug: 'villa-canales',         name: 'Villa Canales',         lat: 14.4833, lng: -90.5372, logo: vcLogo },
+  { slug: 'villa-nueva',           name: 'Villa Nueva',           lat: 14.5237, lng: -90.5891, logo: vnLogo },
 ]
 
 function MapController({ center }: { center: [number, number] }) {

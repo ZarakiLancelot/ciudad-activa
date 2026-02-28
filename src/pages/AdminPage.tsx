@@ -31,9 +31,11 @@ function formatDate(dateStr: string) {
 function AdminPage() {
   const { t } = useTranslation()
   const [reports, setReports] = useState<Report[]>([])
+  const [municipalities, setMunicipalities] = useState<{ id: string; name: string }[]>([])
   const [loading, setLoading] = useState(true)
   const [unauthorized, setUnauthorized] = useState(false)
   const [updatingId, setUpdatingId] = useState<string | null>(null)
+  const [filterMunicipality, setFilterMunicipality] = useState<string>('all')
   const [filterStatus, setFilterStatus] = useState<ReportStatus | 'all'>('all')
   const navigate = useNavigate()
 
@@ -50,16 +52,13 @@ function AdminPage() {
 
       if (!profile?.is_admin) { setUnauthorized(true); setLoading(false); return }
 
-      fetchReports()
-    }
+      const [reportsRes, municipalitiesRes] = await Promise.all([
+        supabase.from('reports').select('*').order('created_at', { ascending: false }),
+        supabase.from('municipalities').select('id, name').order('name'),
+      ])
 
-    async function fetchReports() {
-      const { data, error } = await supabase
-        .from('reports')
-        .select('*')
-        .order('created_at', { ascending: false })
-
-      if (!error && data) setReports(data)
+      if (!reportsRes.error && reportsRes.data) setReports(reportsRes.data)
+      if (!municipalitiesRes.error && municipalitiesRes.data) setMunicipalities(municipalitiesRes.data)
       setLoading(false)
     }
 
@@ -81,15 +80,19 @@ function AdminPage() {
     setUpdatingId(null)
   }
 
-  const filtered = filterStatus === 'all'
+  const byMunicipality = filterMunicipality === 'all'
     ? reports
-    : reports.filter((r) => r.status === filterStatus)
+    : reports.filter((r) => r.municipality_id === filterMunicipality)
+
+  const filtered = filterStatus === 'all'
+    ? byMunicipality
+    : byMunicipality.filter((r) => r.status === filterStatus)
 
   const counts = {
-    all: reports.length,
-    pending: reports.filter((r) => r.status === 'pending').length,
-    in_progress: reports.filter((r) => r.status === 'in_progress').length,
-    resolved: reports.filter((r) => r.status === 'resolved').length,
+    all: byMunicipality.length,
+    pending: byMunicipality.filter((r) => r.status === 'pending').length,
+    in_progress: byMunicipality.filter((r) => r.status === 'in_progress').length,
+    resolved: byMunicipality.filter((r) => r.status === 'resolved').length,
   }
 
   if (loading) {
@@ -144,6 +147,30 @@ function AdminPage() {
       </div>
 
       <div style={{ padding: '16px', maxWidth: '800px', margin: '0 auto' }}>
+        {/* Municipality filter */}
+        <select
+          value={filterMunicipality}
+          onChange={(e) => { setFilterMunicipality(e.target.value); setFilterStatus('all') }}
+          style={{
+            width: '100%',
+            padding: '10px 12px',
+            marginBottom: '14px',
+            border: '1px solid #e5e7eb',
+            borderRadius: '10px',
+            fontSize: '14px',
+            fontWeight: 600,
+            color: '#374151',
+            background: 'white',
+            cursor: 'pointer',
+            outline: 'none',
+          }}
+        >
+          <option value="all">{t('admin.allMunicipalities')}</option>
+          {municipalities.map((m) => (
+            <option key={m.id} value={m.id}>{m.name}</option>
+          ))}
+        </select>
+
         {/* Stats */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', marginBottom: '20px' }}>
           {[
