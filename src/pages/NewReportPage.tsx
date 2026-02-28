@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { useNavigate } from 'react-router'
+import { useNavigate, useLocation } from 'react-router'
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
@@ -14,7 +14,7 @@ import markerShadow from 'leaflet/dist/images/marker-shadow.png'
 delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)._getIconUrl
 L.Icon.Default.mergeOptions({ iconRetinaUrl: markerIcon2x, iconUrl: markerIcon, shadowUrl: markerShadow })
 
-const SAN_JOSE_PINULA = { lat: 14.5386, lng: -90.4125 }
+const DEFAULT_CENTER = { lat: 14.5386, lng: -90.4125 }
 
 const CATEGORIES: { value: ReportCategory; label: string; color: string }[] = [
   { value: 'pothole', label: 'Bache', color: '#f97316' },
@@ -65,12 +65,16 @@ function NewReportPage() {
   const [error, setError] = useState<string | null>(null)
   const [municipalityId, setMunicipalityId] = useState<string | null>(null)
   const navigate = useNavigate()
+  const routeLocation = useLocation()
+  const routeState = routeLocation.state as { lat?: number; lng?: number; municipalitySlug?: string } | null
+  const mapCenter = { lat: routeState?.lat ?? DEFAULT_CENTER.lat, lng: routeState?.lng ?? DEFAULT_CENTER.lng }
+  const municipalitySlug = routeState?.municipalitySlug ?? 'san-jose-pinula'
 
   useEffect(() => {
     supabase
       .from('municipalities')
       .select('id')
-      .eq('slug', 'san-jose-pinula')
+      .eq('slug', municipalitySlug)
       .single()
       .then(({ data }) => {
         if (data) setMunicipalityId(data.id)
@@ -403,7 +407,7 @@ function NewReportPage() {
           </p>
           <div style={{ height: '220px', borderRadius: '10px', overflow: 'hidden', border: '1px solid #e5e7eb' }}>
             <MapContainer
-              center={location ? [location.lat, location.lng] : [SAN_JOSE_PINULA.lat, SAN_JOSE_PINULA.lng]}
+              center={location ? [location.lat, location.lng] : [mapCenter.lat, mapCenter.lng]}
               zoom={15}
               style={{ height: '100%', width: '100%' }}
             >
