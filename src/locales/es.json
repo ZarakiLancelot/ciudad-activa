@@ -10,7 +10,8 @@
     "legendHide": "Ocultar",
     "legendTitle": "Categorías",
     "newReportTooltip": "Nuevo reporte",
-    "viewDetail": "Ver detalle"
+    "viewDetail": "Ver detalle",
+    "municipalitySelector": "Seleccionar municipio"
   },
   "categories": {
     "pothole": "Bache",

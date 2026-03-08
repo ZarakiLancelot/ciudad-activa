@@ -69,7 +69,7 @@ function AuthPage() {
   }
 
   return (
-    <div style={{
+    <main style={{
       minHeight: '100%',
       display: 'flex',
       flexDirection: 'column',
@@ -277,7 +277,7 @@ function AuthPage() {
       >
         {t('auth.backToMap')}
       </button>
-    </div>
+    </main>
   )
 }
 
