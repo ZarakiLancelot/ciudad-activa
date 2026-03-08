@@ -19,6 +19,21 @@ export default defineConfig({
         scope: '/',
         start_url: '/',
         lang: 'es',
+        screenshots: [
+          {
+            src: '/screenshots/mobile.png',
+            sizes: '392x846',
+            type: 'image/png',
+            label: 'CiudadActiva — Mapa de reportes',
+          },
+          {
+            src: '/screenshots/desktop.png',
+            sizes: '1495x995',
+            type: 'image/png',
+            form_factor: 'wide',
+            label: 'CiudadActiva — Vista de escritorio',
+          },
+        ],
         icons: [
           {
             src: '/pwa-192.png',
