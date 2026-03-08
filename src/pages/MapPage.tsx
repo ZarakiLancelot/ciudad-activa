@@ -124,7 +124,7 @@ function MapPage() {
   ]
 
   return (
-    <div className="map-page">
+    <main className="map-page">
       {/* Loading overlay */}
       {(loading || switching) && (
         <div style={{
@@ -161,6 +161,7 @@ function MapPage() {
             CiudadActiva
           </h1>
           <select
+            aria-label={t('map.municipalitySelector')}
             value={selectedSlug}
             onChange={(e) => handleMunicipalityChange(e.target.value)}
             style={{
@@ -400,7 +401,7 @@ function MapPage() {
           </svg>
         </button>
       </div>
-    </div>
+    </main>
   )
 }
 

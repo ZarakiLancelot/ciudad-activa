@@ -10,7 +10,8 @@
     "legendHide": "Hide",
     "legendTitle": "Categories",
     "newReportTooltip": "New report",
-    "viewDetail": "View detail"
+    "viewDetail": "View detail",
+    "municipalitySelector": "Select municipality"
   },
   "categories": {
     "pothole": "Pothole",
