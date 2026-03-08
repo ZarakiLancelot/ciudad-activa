@@ -120,7 +120,7 @@ function AdminPage() {
   }
 
   return (
-    <div style={{ height: '100%', overflowY: 'auto', background: '#f9fafb' }}>
+    <main style={{ height: '100%', overflowY: 'auto', background: '#f9fafb' }}>
       {/* Header */}
       <div style={{
         position: 'sticky',
@@ -149,6 +149,7 @@ function AdminPage() {
       <div style={{ padding: '16px', maxWidth: '800px', margin: '0 auto' }}>
         {/* Municipality filter */}
         <select
+          aria-label={t('admin.allMunicipalities')}
           value={filterMunicipality}
           onChange={(e) => { setFilterMunicipality(e.target.value); setFilterStatus('all') }}
           style={{
@@ -310,7 +311,7 @@ function AdminPage() {
           })}
         </div>
       </div>
-    </div>
+    </main>
   )
 }
 

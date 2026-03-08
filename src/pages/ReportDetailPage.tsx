@@ -155,7 +155,7 @@ function ReportDetailPage() {
   const statusStyle = STATUS_COLORS[report.status]
 
   return (
-    <div style={{ height: '100%', overflowY: 'auto', background: '#f9fafb' }}>
+    <main style={{ height: '100%', overflowY: 'auto', background: '#f9fafb' }}>
       {/* Header */}
       <div style={{
         position: 'sticky',
@@ -317,7 +317,7 @@ function ReportDetailPage() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   )
 }
 
