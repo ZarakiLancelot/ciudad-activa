@@ -79,4 +79,16 @@ export default defineConfig({
       },
     }),
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor':    ['react', 'react-dom', 'react-router'],
+          'leaflet-vendor':  ['leaflet', 'react-leaflet'],
+          'supabase-vendor': ['@supabase/supabase-js'],
+          'i18n-vendor':     ['i18next', 'react-i18next', 'i18next-browser-languagedetector'],
+        },
+      },
+    },
+  },
 })
