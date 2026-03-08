@@ -14,11 +14,19 @@ const CATEGORY_COLORS: Record<ReportCategory, string> = {
   other: '#8b5cf6',
 }
 
+const CATEGORIES: ReportCategory[] = ['pothole', 'accident', 'lighting', 'water', 'trash', 'other']
+
 const STATUS_OPTIONS: { value: ReportStatus; bg: string; color: string }[] = [
-  { value: 'pending', bg: '#fef3c7', color: '#92400e' },
+  { value: 'pending',     bg: '#fef3c7', color: '#92400e' },
   { value: 'in_progress', bg: '#dbeafe', color: '#1e40af' },
-  { value: 'resolved', bg: '#dcfce7', color: '#166534' },
+  { value: 'resolved',    bg: '#dcfce7', color: '#166534' },
 ]
+
+const STATUS_DONUT_COLORS: Record<ReportStatus, string> = {
+  pending:     '#fbbf24',
+  in_progress: '#60a5fa',
+  resolved:    '#4ade80',
+}
 
 function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString('es-GT', {
@@ -37,6 +45,7 @@ function AdminPage() {
   const [updatingId, setUpdatingId] = useState<string | null>(null)
   const [filterMunicipality, setFilterMunicipality] = useState<string>('all')
   const [filterStatus, setFilterStatus] = useState<ReportStatus | 'all'>('all')
+  const [showAnalytics, setShowAnalytics] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -89,11 +98,27 @@ function AdminPage() {
     : byMunicipality.filter((r) => r.status === filterStatus)
 
   const counts = {
-    all: byMunicipality.length,
-    pending: byMunicipality.filter((r) => r.status === 'pending').length,
+    all:         byMunicipality.length,
+    pending:     byMunicipality.filter((r) => r.status === 'pending').length,
     in_progress: byMunicipality.filter((r) => r.status === 'in_progress').length,
-    resolved: byMunicipality.filter((r) => r.status === 'resolved').length,
+    resolved:    byMunicipality.filter((r) => r.status === 'resolved').length,
   }
+
+  // ── Analytics ──────────────────────────────────────────────────────────────
+  const analyticsTotal = byMunicipality.length
+  const pendingDeg    = analyticsTotal > 0 ? (counts.pending     / analyticsTotal) * 360 : 0
+  const inProgressDeg = analyticsTotal > 0 ? (counts.in_progress / analyticsTotal) * 360 : 0
+
+  const last7days = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date()
+    d.setDate(d.getDate() - (6 - i))
+    const dayStr = d.toISOString().split('T')[0]
+    const label  = d.toLocaleDateString('es-GT', { weekday: 'short' }).slice(0, 2)
+    const count  = byMunicipality.filter((r) => r.created_at.startsWith(dayStr)).length
+    return { day: dayStr, label, count }
+  })
+  const maxDayCount = Math.max(...last7days.map((d) => d.count), 1)
+  // ───────────────────────────────────────────────────────────────────────────
 
   if (loading) {
     return (
@@ -173,7 +198,7 @@ function AdminPage() {
         </select>
 
         {/* Stats */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', marginBottom: '20px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', marginBottom: '14px' }}>
           {[
             { key: 'all', label: t('admin.total'), bg: '#f3f4f6', color: '#111827' },
             { key: 'pending', label: t('status.pending'), bg: '#fef3c7', color: '#92400e' },
@@ -200,7 +225,161 @@ function AdminPage() {
           ))}
         </div>
 
-        {/* Reports list */}
+        {/* ── Analytics ──────────────────────────────────────────────────── */}
+        <div style={{ marginBottom: '20px' }}>
+          <button
+            onClick={() => setShowAnalytics((v) => !v)}
+            style={{
+              width: '100%',
+              padding: '11px 16px',
+              background: 'white',
+              border: '1px solid #e5e7eb',
+              borderRadius: showAnalytics ? '10px 10px 0 0' : '10px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: 600,
+              color: '#374151',
+            }}
+          >
+            <span>📊 {t('admin.analytics')}</span>
+            <span style={{ fontSize: '11px', color: '#9ca3af' }}>{showAnalytics ? '▲' : '▼'}</span>
+          </button>
+
+          {showAnalytics && (
+            <div style={{
+              background: 'white',
+              border: '1px solid #e5e7eb',
+              borderTop: 'none',
+              borderRadius: '0 0 10px 10px',
+              padding: '16px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '24px',
+            }}>
+
+              {/* Barras por categoría + Dona de estado */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+
+                {/* Barras por categoría */}
+                <div>
+                  <p style={{ fontSize: '11px', fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px' }}>
+                    {t('admin.byCategory')}
+                  </p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '9px' }}>
+                    {CATEGORIES.map((cat) => {
+                      const count = byMunicipality.filter((r) => r.category === cat).length
+                      const pct   = analyticsTotal > 0 ? (count / analyticsTotal) * 100 : 0
+                      return (
+                        <div key={cat} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span style={{ fontSize: '11px', color: '#374151', width: '62px', flexShrink: 0 }}>
+                            {t(`categories.${cat}`)}
+                          </span>
+                          <div style={{ flex: 1, height: '8px', background: '#f3f4f6', borderRadius: '999px', overflow: 'hidden' }}>
+                            <div style={{
+                              width: `${pct}%`,
+                              height: '100%',
+                              background: CATEGORY_COLORS[cat],
+                              borderRadius: '999px',
+                              transition: 'width 0.5s ease',
+                              minWidth: count > 0 ? '6px' : '0',
+                            }} />
+                          </div>
+                          <span style={{ fontSize: '11px', fontWeight: 700, color: '#374151', minWidth: '16px', textAlign: 'right' }}>
+                            {count}
+                          </span>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+
+                {/* Dona de estado */}
+                <div>
+                  <p style={{ fontSize: '11px', fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px' }}>
+                    {t('admin.byStatus')}
+                  </p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                    {analyticsTotal === 0 ? (
+                      <div style={{ width: '72px', height: '72px', borderRadius: '50%', background: '#f3f4f6', flexShrink: 0 }} />
+                    ) : (
+                      <div style={{
+                        width: '72px',
+                        height: '72px',
+                        borderRadius: '50%',
+                        background: `conic-gradient(
+                          ${STATUS_DONUT_COLORS.pending}     0deg ${pendingDeg}deg,
+                          ${STATUS_DONUT_COLORS.in_progress} ${pendingDeg}deg ${pendingDeg + inProgressDeg}deg,
+                          ${STATUS_DONUT_COLORS.resolved}    ${pendingDeg + inProgressDeg}deg 360deg
+                        )`,
+                        WebkitMaskImage: 'radial-gradient(transparent 26px, black 27px)',
+                        maskImage:       'radial-gradient(transparent 26px, black 27px)',
+                        flexShrink: 0,
+                      }} />
+                    )}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
+                      {STATUS_OPTIONS.map((opt) => (
+                        <div key={opt.value} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <div style={{
+                            width: '9px', height: '9px', borderRadius: '50%',
+                            background: STATUS_DONUT_COLORS[opt.value], flexShrink: 0,
+                          }} />
+                          <span style={{ fontSize: '11px', color: '#374151', flex: 1 }}>
+                            {t(`status.${opt.value}`)}
+                          </span>
+                          <span style={{ fontSize: '11px', fontWeight: 700, color: '#111827' }}>
+                            {counts[opt.value]}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Barras — últimos 7 días */}
+              <div>
+                <p style={{ fontSize: '11px', fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '10px' }}>
+                  {t('admin.last7days')}
+                </p>
+                <div style={{ display: 'flex', alignItems: 'flex-end', gap: '6px', height: '80px' }}>
+                  {last7days.map(({ day, label, count }) => {
+                    const barHeight = count > 0 ? Math.max((count / maxDayCount) * 56, 4) : 0
+                    return (
+                      <div
+                        key={day}
+                        style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', height: '100%', justifyContent: 'flex-end' }}
+                      >
+                        <span style={{
+                          fontSize: '10px', fontWeight: 700, color: '#374151', lineHeight: 1,
+                          visibility: count > 0 ? 'visible' : 'hidden',
+                        }}>
+                          {count}
+                        </span>
+                        <div style={{
+                          width: '100%',
+                          height: `${barHeight}px`,
+                          background: '#16a34a',
+                          borderRadius: '3px 3px 0 0',
+                          opacity: count > 0 ? 1 : 0,
+                          transition: 'height 0.4s ease',
+                        }} />
+                        <div style={{ width: '100%', height: '2px', background: '#e5e7eb', borderRadius: '1px' }} />
+                        <span style={{ fontSize: '10px', color: '#9ca3af' }}>{label}</span>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+
+            </div>
+          )}
+        </div>
+        {/* ─────────────────────────────────────────────────────────────────── */}
+
+        {/* Lista de reportes */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {filtered.length === 0 && (
             <p style={{ textAlign: 'center', color: '#9ca3af', padding: '40px 0' }}>
