@@ -97,6 +97,10 @@
     "total": "Total",
     "noReports": "No reports in this category.",
     "changeStatus": "Change status:",
-    "viewDetail": "View detail"
+    "viewDetail": "View detail",
+    "analytics": "Analytics",
+    "byCategory": "By category",
+    "byStatus": "By status",
+    "last7days": "Last 7 days"
   }
 }
